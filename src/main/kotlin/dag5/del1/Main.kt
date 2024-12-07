@@ -1,4 +1,4 @@
-package dag_5.del_2
+package dag5.del_1
 import java.io.File
 
 fun main() {
@@ -16,39 +16,17 @@ fun main() {
     
     var total = 0
     for (print in prints) {
-       var fixedPrint: List<Int>? = null 
+       var ok = true
        for (rule in rules) {
            if (!followsRule(print, rule)) {
-             fixedPrint = fix(print, rules)
+             ok = false
              break
            }  
        }
-        if(fixedPrint!=null) total += middleNumber(fixedPrint)
+        if(ok) total += middleNumber(print)
     }
-    println(total)
-}
 
-fun fix(print: List<Int> , rules: List<Pair<Int, Int>>): List<Int> {
-    val fixedPrint = print.map { it.toString().toInt() }.toMutableList()
-    
-    while (true) {
-        var changed = false
-        for (rule in rules) {
-            if (!followsRule(fixedPrint, rule)) {
-                val firstIndex = fixedPrint.indexOf(rule.first)
-                val secondIndex = fixedPrint.indexOf(rule.second)
-                
-                if (firstIndex > secondIndex) {
-                    val element = fixedPrint.removeAt(firstIndex)
-                    fixedPrint.add(secondIndex, element)
-                    changed = true
-                }
-            }
-        }
-        if (!changed) break
-    }
-    
-    return fixedPrint
+    println(total)
 }
 
 fun middleNumber(list: List<Int>): Int {

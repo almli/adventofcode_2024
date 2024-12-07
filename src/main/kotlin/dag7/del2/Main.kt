@@ -1,4 +1,4 @@
-package dag_7
+package dag7
 import java.io.File
 import kotlin.math.abs
 
@@ -17,6 +17,7 @@ class Mul : Op {
         return val1 * val2
     }
 }
+
 class Com : Op {
     override fun apply(val1: Long, val2: Long): Long {
         return   (val1.toString() + val2.toString()).toLong()
@@ -42,14 +43,12 @@ class Task(private var answer: Long, private var inputs: List<Long>) {
             return false
         }
         var newRemaningInputs = remaningInputs.drop(1);
-        
         if(newRemaningInputs.isEmpty()) {
             return newTotSoFar == answer
         }
         return testOp(newTotSoFar, newRemaningInputs, addOp ) ||
                testOp(newTotSoFar, newRemaningInputs, mulOp ) ||
                testOp(newTotSoFar, newRemaningInputs, comOp )    
-
     }
 
     fun solve(): Boolean {
@@ -64,7 +63,7 @@ fun main() {
         val (answer, inputs) = line.split(":")
         Task(answer.trim().toLong(), inputs.trim().split(" ").map { it.toLong() })
     }
-    var sum : Long = 0
+     var sum : Long = 0
 
     for (task in tasks) {
         if(task.solve())

@@ -1,4 +1,4 @@
-package dag_4.del_1
+package dag4.del_1
 import java.io.File
 import kotlin.math.abs
 
