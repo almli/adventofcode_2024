@@ -1,4 +1,4 @@
-package dag5.del_2
+package dag5.del2
 import java.io.File
 
 fun main() {
