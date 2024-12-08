@@ -15,7 +15,6 @@ class Navigator(private var pos: Pair<Int, Int>) {
             Direction.LEFT -> Pair(pos.first, pos.second - 1)
         }
     }
-  
     fun nextVal(): Char? {
         val nextPos = findNextPos()
         return if (nextPos.first < 0 || nextPos.second < 0 || nextPos.first >= data.size || nextPos.second >= data[nextPos.first].size) null else data[nextPos.first][nextPos.second]
@@ -29,18 +28,14 @@ class Navigator(private var pos: Pair<Int, Int>) {
         pos = findNextPos()
         return newVistited
     }
-
     fun turnRight() {
         direction = Direction.values()[(direction.ordinal + 1) % Direction.values().size]
     }
-
     enum class Direction {
         UP, RIGHT, DOWN, LEFT
     }
-
     fun position() = pos
 }
-
 fun main() {
     var totalCount = 1
     data = File("../data.txt").readLines().map { it.toCharArray() }.toTypedArray()
@@ -56,7 +51,6 @@ fun main() {
     }
     println(totalCount)
 }
-
 fun findPos(): Pair<Int, Int> {
     for (i in data.indices) {
         for (j in data[i].indices) {

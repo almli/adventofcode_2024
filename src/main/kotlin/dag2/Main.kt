@@ -11,8 +11,7 @@ fun main() {
           sum++
         else  if(line.indices.any { i -> safe(line.filterIndexed { idx, _ -> idx != i }) })
            sum++
-    }
-    
+    } 
     println(sum)
 }
 fun safe(line: List<Int>): Boolean {

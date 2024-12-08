@@ -15,23 +15,19 @@ class Navigator(private var pos: Pair<Int, Int>) {
             Direction.L -> Pair(pos.first, pos.second - 1)
         }
     }
-  
     fun nextVal(): Char? {
         val nextPos = findNextPos()
         return if (nextPos.first < 0 || nextPos.second < 0 || nextPos.first >= data.size || nextPos.second >= data[nextPos.first].size) null else data[nextPos.first][nextPos.second]
     }
-
     fun move():Boolean {
         var newVistited = false
         pos = findNextPos()
         if( data[pos.first][pos.second] != 'X') {
             data[pos.first][pos.second] = 'X'
             newVistited =  true
-        }
-       
+        }  
         return newVistited
     }
-
     fun moveCheckLoop():Boolean {
         var loop = false
         if( data[pos.first][pos.second] == '.') {
@@ -42,18 +38,14 @@ class Navigator(private var pos: Pair<Int, Int>) {
         pos = findNextPos()
         return loop
     }
-
     fun turnRight() {
         direction = Direction.values()[(direction.ordinal + 1) % Direction.values().size]
     }
-
     enum class Direction {
         U, R, D, L
     }
-
     fun position() = pos
 }
-
 fun main() {
     var totalCount = 0
     data = File("../data.txt").readLines().map { it.toCharArray() }.toTypedArray()
@@ -68,7 +60,6 @@ fun main() {
     }
     println(totalCount)
 }
-
 fun findPath():List<Pair<Int,Int>> {
     var path = mutableListOf<Pair<Int,Int>>()
     var nav = Navigator(startPos)
@@ -84,7 +75,6 @@ fun findPath():List<Pair<Int,Int>> {
     }
     return path
 }
-
 fun isLoop(): Boolean {
     var nav = Navigator(startPos)
     while(true) {
@@ -97,7 +87,6 @@ fun isLoop(): Boolean {
         }
     }
 }
-
 fun findStartPos(): Pair<Int, Int> {
     for (i in data.indices) {
         for (j in data[i].indices) {
@@ -106,4 +95,3 @@ fun findStartPos(): Pair<Int, Int> {
     }
     throw Exception("No pos found")
 }
-

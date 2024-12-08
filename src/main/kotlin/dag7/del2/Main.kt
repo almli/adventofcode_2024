@@ -5,38 +5,31 @@ import kotlin.math.abs
 interface Op {
     fun apply(val1: Long, val2: Long): Long
 }
-
 class Add : Op {
     override fun apply(val1: Long, val2: Long): Long {
         return val1 + val2
     }
 }
-
 class Mul : Op {
     override fun apply(val1: Long, val2: Long): Long {
         return val1 * val2
     }
 }
-
 class Com : Op {
     override fun apply(val1: Long, val2: Long): Long {
         return   (val1.toString() + val2.toString()).toLong()
     }
 }
-
 val addOp = Add()
 val mulOp = Mul()
 val comOp = Com()
-
 class Task(private var answer: Long, private var inputs: List<Long>) {
     fun getAnswer(): Long {
         return answer
     }
-
     fun getInputs(): List<Long> {
         return inputs
     }
-
     private fun testOp(totSoFar:Long, remaningInputs: List<Long>, op:Op ): Boolean {
         var newTotSoFar = op.apply(totSoFar,remaningInputs[0]);
         if(newTotSoFar > answer) {
@@ -50,14 +43,12 @@ class Task(private var answer: Long, private var inputs: List<Long>) {
                testOp(newTotSoFar, newRemaningInputs, mulOp ) ||
                testOp(newTotSoFar, newRemaningInputs, comOp )    
     }
-
     fun solve(): Boolean {
         return testOp(inputs[0], inputs.drop(1), addOp) ||
                testOp(inputs[0], inputs.drop(1), mulOp)||
                testOp(inputs[0], inputs.drop(1), comOp ) 
     }
 }
-
 fun main() {
     val tasks = File("../data.txt").readLines().map { line ->
         val (answer, inputs) = line.split(":")

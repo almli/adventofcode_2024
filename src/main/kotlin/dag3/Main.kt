@@ -7,7 +7,6 @@ fun main() {
     val pattern = Regex("""mul\(\d{1,3},\d{1,3}\)|do\(\)|don't\(\)""")
     val matches = pattern.findAll(text).map { it.value }.toList()
 
- 
     var includeMode = true
     val clean = mutableListOf<String>()
 
@@ -21,12 +20,10 @@ fun main() {
             includeMode = true
         }
     }
-
     val pattern2 = Regex("""mul\((\d{1,3}),(\d{1,3})\)""") 
     val total = clean.sumOf {
         val (a, b) = pattern2.find(it)!!.destructured
         a.toInt() * b.toInt()
     } 
-
     println(total)
 }
