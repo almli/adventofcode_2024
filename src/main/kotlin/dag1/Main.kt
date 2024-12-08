@@ -7,7 +7,7 @@ fun main() {
         .map { it.trim().split("\\s+".toRegex()) }
         .map { (a, b) -> a.toInt() to b.toInt() }
         .unzip()
-
+        
     val sortedCol1 = col1.sorted()
     val sortedCol2 = col2.sorted()
     val totalDiff = (sortedCol1 zip sortedCol2).sumOf { (a, b) -> abs(a - b) }
