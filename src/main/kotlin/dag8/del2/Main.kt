@@ -21,6 +21,7 @@ fun main() {
             }
         }
     }
+
     antennaMap.forEach { (a, aLoc) ->
        collectAntinodes(findAntennaPairs(aLoc))
     }
@@ -38,6 +39,7 @@ fun collectAntinodes(antennaPairs: List<Pair<Pair<Int, Int>, Pair<Int, Int>>>) {
         }
     }
 }
+
 fun isInLine(node: Pair<Int, Int>, a: Pair<Int, Int>, b: Pair<Int, Int>): Boolean {
     val (aX, aY) = a
     val (bX, bY) = b
@@ -51,9 +53,11 @@ fun isInLine(node: Pair<Int, Int>, a: Pair<Int, Int>, b: Pair<Int, Int>): Boolea
     }
     return false
 }
+
 fun isInBounds(node:Pair<Int,Int>): Boolean {
     return node.first >= 0 && node.first < maxX && node.second >= 0 && node.second < maxY
 }
+
 fun findAntennaPairs(aLoc: List<Pair<Int, Int>>): List<Pair<Pair<Int, Int>, Pair<Int, Int>>> {
     val antennaPairs = mutableListOf<Pair<Pair<Int, Int>, Pair<Int, Int>>>()
     aLoc.forEachIndexed { index, a ->
