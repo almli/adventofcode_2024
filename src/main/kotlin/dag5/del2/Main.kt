@@ -2,17 +2,10 @@ package dag5.del2
 import java.io.File
 
 fun main() {
-    val lines = File("../data.txt").readLines()
-    
-    val rules = lines
-        .filter { it.contains("|") }
-        .map { it.split("|") }
-        .map { (a, b) -> a.toInt() to b.toInt() }
-    
-    val prints = lines
-        .filter { it.contains(",") }
-        .map { it.split(",") }
-        .map { parts -> parts.map { it.toInt() } }
+    val (rules, prints) = File("../data.txt").readLines().let { lines ->
+        lines.filter { "|" in it }.map { it.split("|").let { (a, b) -> a.toInt() to b.toInt() } } to
+        lines.filter { "," in it }.map { it.split(",").map { it.toInt() } }
+    }
     
     var total = 0
     for (print in prints) {
