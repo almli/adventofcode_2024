@@ -4,7 +4,6 @@ import kotlin.math.abs
 
 fun main() {
     val data = File("data.txt").readLines().map { it.split("\\s+".toRegex()).map(String::toInt) }
-
     var sum = 0
     data.forEach { line ->
         if(safe(line))
@@ -14,6 +13,7 @@ fun main() {
     } 
     println(sum)
 }
+
 fun safe(line: List<Int>): Boolean {
     if (line.size < 2) return false
     if (line != line.sorted() && line != line.sortedDescending()) return false

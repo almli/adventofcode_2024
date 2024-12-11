@@ -10,7 +10,7 @@ fun main() {
     data = File("../data.txt").readLines().map { it.toCharArray() }.toTypedArray()
     for (i in data.indices) {
         for (j in data[i].indices) {
-            totalCount +=findEndLocations(i, j, WORD).distinct().size
+            totalCount += findEndLocations(i, j, WORD).distinct().size
         }
     }
     println(totalCount)
