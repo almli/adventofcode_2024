@@ -18,4 +18,3 @@ fun solveStone(depth: Int, stone:Long): Long {
         return solveStone(depth+1, stone * 2024L)
     }
 }
-//218956
