@@ -18,7 +18,7 @@ fun main() {
 private fun calc(extra: Long): Long {
     val machines = File("data.txt").readText().trim().split("\n\n").map { it.lines() }.map { parse(it, extra) };
     val sum = machines.sumOf {
-        //disse fomlene er funnet ved å løse ligningene med to ukjente  px=b*bxstep+a*axstep , py=b*bystep+a*aystep
+        //disse formelene er funnet ved å løse ligningene med to ukjente  px=b*bxstep+a*axstep , py=b*bystep+a*aystep
         val t = it.px * it.ay - it.py * it.ax
         val n = it.bx * it.ay - it.by * it.ax
         if (t % n != 0L) return@sumOf 0L
