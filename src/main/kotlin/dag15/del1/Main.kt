@@ -25,25 +25,22 @@ fun main() {
             pos = navigator.invoke(pos.first, pos.second);
         }
     }
-
     val sum = sumOfGps(wh)
     wh[pos.second][pos.first] = '@'
     println(wh.joinToString("\n") { it.concatToString() })
     println(sum)
 }
-
 fun sumOfGps(wh: Array<CharArray>): Int {
     var sum = 0
     for (i in 0..<wh.size)
         for (j in 0..<wh[i].size) {
-            if (wh[i][j] != '#'  && wh[i][j] != '.') {
+            if (wh[i][j] != '#' && wh[i][j] != '.') {
                 val gps = 100 * i + j
                 sum += gps
             }
         }
     return sum
 }
-
 fun updatePath(path: CharArray, navigator: ((Int, Int) -> Pair<Int, Int>), pos: Pair<Int, Int>, wh: Array<CharArray>) {
     var nextPos = pos;
     for (c in path) {
@@ -51,11 +48,9 @@ fun updatePath(path: CharArray, navigator: ((Int, Int) -> Pair<Int, Int>), pos: 
         wh[nextPos.second][nextPos.first] = c
     }
 }
-
 fun isInside(pos: Pair<Int, Int>, wh: Array<CharArray>): Boolean {
     return pos.second >= 0 && pos.second < wh.size && pos.first >= 0 && pos.first < wh[pos.second].size
 }
-
 fun findPath(navigator: ((Int, Int) -> Pair<Int, Int>), pos: Pair<Int, Int>, wh: Array<CharArray>): CharArray {
     val res = mutableListOf<Char>()
     var nextPos = pos;
@@ -67,17 +62,14 @@ fun findPath(navigator: ((Int, Int) -> Pair<Int, Int>), pos: Pair<Int, Int>, wh:
     }
     return res.toCharArray()
 }
-
 fun bump(path: CharArray): CharArray {
     if (path.isEmpty() || path[0] == '.') return path
     val firstSpaceIndex = path.indexOf('.')
     if (firstSpaceIndex < 0) return path
     val zeroes = CharArray(firstSpaceIndex) { 'O' }
     val rest = path.copyOfRange(firstSpaceIndex + 1, path.size)
-
     return charArrayOf('.') + zeroes + rest
 }
-
 fun findRobot(wh: Array<CharArray>): Pair<Int, Int> {
     for (i in 0..<wh.size)
         for (j in 0..<wh[i].size)

@@ -3,87 +3,113 @@ package dag15.del2
 import java.io.File
 
 fun main() {
-    val data = File("../data.txt").readLines().map { it.toCharArray() }
+    val data = File("../data.txt").readLines()
     val splitIndex = data.indexOfFirst { it.isEmpty() }
-    val wh = data.subList(0, splitIndex).toTypedArray()
+    val wh = data.subList(0, splitIndex)
+        .map { it.replace("O", "[]").replace(".", "..").replace("#", "##").replace("@", "@.").toCharArray() }
+        .toTypedArray()
     val moves = data.drop(splitIndex + 1).flatMap { it.asIterable() }.toCharArray()
-    println(wh.joinToString("\n") { it.concatToString() })
+    dump(wh)
     var pos = findRobot(wh)
     wh[pos.second][pos.first] = '.'
     val navigators = mapOf(
         '<' to { x: Int, y: Int -> x - 1 to y },
         '>' to { x: Int, y: Int -> x + 1 to y },
         '^' to { x: Int, y: Int -> x to y - 1 },
-        'v' to { x: Int, y: Int -> x to y + 1 }
-    )
+        'v' to { x: Int, y: Int -> x to y + 1 })
     for (move in moves) {
         val navigator = navigators[move]!!
-        val path = findPath(navigator, pos.first to pos.second, wh)
-        val bump = bump(path)
-        if (bump.isNotEmpty() && bump[0] == '.') {
-            updatePath(bump, navigator, pos.first to pos.second, wh)
+        if (isEmpty(pos, navigator, wh)) {
             pos = navigator.invoke(pos.first, pos.second);
+        } else {
+            val objectPositions = mutableListOf<Pair<Int, Int>>()
+            findObjectFromPos(pos, navigator, wh, objectPositions, move == '^' || move == 'v')
+            if (!objectPositions.isEmpty() && isMoveable(objectPositions, navigator, wh)) {
+                updateObjectPositions(navigator, objectPositions, wh)
+                pos = navigator.invoke(pos.first, pos.second);
+            }
         }
+        wh[pos.second][pos.first] = '@'
+        wh[pos.second][pos.first] = '.'
     }
-
     val sum = sumOfGps(wh)
     wh[pos.second][pos.first] = '@'
-    println(wh.joinToString("\n") { it.concatToString() })
     println(sum)
 }
 
-fun sumOfGps(wh: Array<CharArray>): Int {
-    var sum = 0
-    for (i in 0..<wh.size)
-        for (j in 0..<wh[i].size) {
-            if (wh[i][j] != '#'  && wh[i][j] != '.') {
-                val gps = 100 * i + j
-                println("i:$i, j:$j, gps:$gps, " +  wh[i][j])
-                sum += gps
-            }
-        }
-    return sum
+private fun dump(wh: Array<CharArray>) {
+    println(wh.joinToString("\n") { it.concatToString() })
 }
 
-
-fun updatePath(path: CharArray, navigator: ((Int, Int) -> Pair<Int, Int>), pos: Pair<Int, Int>, wh: Array<CharArray>) {
-    var nextPos = pos;
-    for (c in path) {
-        nextPos = navigator.invoke(nextPos.first, nextPos.second)
-        wh[nextPos.second][nextPos.first] = c
+fun updateObjectPositions(
+    navigator: (Int, Int) -> Pair<Int, Int>, objectPositions: MutableList<Pair<Int, Int>>, wh: Array<CharArray>
+) {
+    val posMap = objectPositions.map { it to wh[it.second][it.first] }.toMap()
+    for (pos in objectPositions) {
+        wh[pos.second][pos.first] = '.'
+    }
+    for (pos in objectPositions) {
+        val nextPos = navigator.invoke(pos.first, pos.second)
+        wh[nextPos.second][nextPos.first] = posMap[pos]!!
     }
 }
-
+fun isMoveable(
+    objectPositions: List<Pair<Int, Int>>, navigator: (Int, Int) -> Pair<Int, Int>, wh: Array<CharArray>
+): Boolean {
+    for (pos in objectPositions) {
+        val nextPos = navigator.invoke(pos.first, pos.second)
+        if (!isInside(nextPos, wh) || wh[nextPos.second][nextPos.first] == '#') {
+            return false
+        }
+    }
+    return true
+}
+fun isEmpty(pair: Pair<Int, Int>, function: (Int, Int) -> Pair<Int, Int>, arrays: Array<CharArray>): Boolean {
+    val (x, y) = function.invoke(pair.first, pair.second)
+    return arrays[y][x] == '.'
+}
+fun findObjectFromPos(
+    currentPos: Pair<Int, Int>,
+    navigator: (Int, Int) -> Pair<Int, Int>,
+    wh: Array<CharArray>,
+    objectPositions: MutableList<Pair<Int, Int>>,
+    vertical: Boolean
+) {
+    val nextPos = navigator.invoke(currentPos.first, currentPos.second)
+    if (!isInside(nextPos, wh) || wh[nextPos.second][nextPos.first] == '#') {
+        return
+    }
+    val c = wh[nextPos.second][nextPos.first];
+    if (c == '[') {
+        objectPositions.add(nextPos)
+        findObjectFromPos(nextPos, navigator, wh, objectPositions, vertical)
+        if (vertical) {
+            objectPositions.add(nextPos.first + 1 to nextPos.second)
+            findObjectFromPos(nextPos.first + 1 to nextPos.second, navigator, wh, objectPositions, vertical)
+        }
+    } else if (c == ']') {
+        objectPositions.add(nextPos)
+        findObjectFromPos(nextPos, navigator, wh, objectPositions, vertical)
+        if (vertical) {
+            objectPositions.add(nextPos.first - 1 to nextPos.second)
+            findObjectFromPos(nextPos.first - 1 to nextPos.second, navigator, wh, objectPositions, vertical)
+        }
+    }
+    return
+}
+fun sumOfGps(wh: Array<CharArray>): Int {
+    var sum = 0
+    for (i in 0..<wh.size) for (j in 0..<wh[i].size) {
+        if (wh[i][j] == '[') {
+            sum += 100 * i + j
+        }
+    }
+    return sum
+}
 fun isInside(pos: Pair<Int, Int>, wh: Array<CharArray>): Boolean {
     return pos.second >= 0 && pos.second < wh.size && pos.first >= 0 && pos.first < wh[pos.second].size
 }
-
-fun findPath(navigator: ((Int, Int) -> Pair<Int, Int>), pos: Pair<Int, Int>, wh: Array<CharArray>): CharArray {
-    val res = mutableListOf<Char>()
-    var nextPos = pos;
-    while (true) {
-        nextPos = navigator.invoke(nextPos.first, nextPos.second)
-        if (!isInside(nextPos, wh) || wh[nextPos.second][nextPos.first] == '#')
-            break
-        res.add(wh[nextPos.second][nextPos.first])
-    }
-    return res.toCharArray()
-}
-
-fun bump(path: CharArray): CharArray {
-    if (path.isEmpty() || path[0] == '.') return path
-    val firstSpaceIndex = path.indexOf('.')
-    if (firstSpaceIndex < 0) return path
-    val zeroes = CharArray(firstSpaceIndex) { 'O' }
-    val rest = path.copyOfRange(firstSpaceIndex + 1, path.size)
-
-    return charArrayOf('.') + zeroes + rest
-}
-
 fun findRobot(wh: Array<CharArray>): Pair<Int, Int> {
-    for (i in 0..<wh.size)
-        for (j in 0..<wh[i].size)
-            if (wh[i][j] == '@')
-                return j to i
+    for (i in 0..<wh.size) for (j in 0..<wh[i].size) if (wh[i][j] == '@') return j to i
     throw RuntimeException("robot mangler")
 }
