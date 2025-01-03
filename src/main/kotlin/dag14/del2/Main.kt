@@ -30,19 +30,21 @@ fun main() {
     val robotCount = robots.size;
     // printPattern(robots)
     var limitCount =  robotCount*0.8
-    for (s in 1..SECONDS) {
+    for (s in 1..7858) {
         for (robot in robots) {
             robot.xPos = ((robot.xInitPos + robot.xSpeed * s) % SIZE_X).let { if (it < 0) it + SIZE_X else it }
             robot.yPos = ((robot.yInitPos + robot.ySpeed * s) % SIZE_Y).let { if (it < 0) it + SIZE_Y else it }
 
         }
-        val count = robots.filter { it.q() == 1 }.count()
+    /*    val count = robots.filter { it.q() == 1 }.count()
         if (count >= limitCount) {
             println(s)
             printPattern(robots)
             break
-        }
+        }*/
+
     }
+    printPattern(robots)
 }
 
 fun printPattern(robots: List<Robot>) {
